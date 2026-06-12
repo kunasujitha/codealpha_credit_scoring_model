@@ -151,6 +151,10 @@ print(df['Credit_Risk_Level'].value_counts())
 
 sns.countplot(x = 'Credit_Risk_Level', data = df)
 plt.title("credit risk level distribution")
+plt.savefig(
+    "visualizations/target_distribution.png",
+    bbox_inches="tight"
+)
 plt.show()
 
 """This graph shows the class imbalance in the target variable.
@@ -218,6 +222,10 @@ corr_matrix = df.corr()
 plt.figure(figsize=(18,10))
 sns.heatmap(corr_matrix[['Credit_Risk_Level']].sort_values(by='Credit_Risk_Level', ascending=False), cmap='coolwarm',annot=True)
 plt.title('correlation matrix')
+plt.savefig(
+    "visualizations/correlation_heatmap.png",
+    bbox_inches="tight"
+)
 plt.show()
 
 """Some features will have:
@@ -247,6 +255,7 @@ selected_features = ['Debt_to_Income_Ratio',
 plt.figure(figsize=(12,6))
 sns.boxplot(data = df[selected_features])
 plt.xticks(rotation=45)
+plt.title("Outlier Detection using Box-plot")
 plt.show()
 
 #outlier removal
@@ -385,8 +394,12 @@ plt.plot(fpr, tpr, label='ROC Curve')
 plt.plot([0,1],[0,1],linestyle = '--')
 plt.xlabel("False Positive Rate")
 plt.ylabel("True Positive Rate")
-plt.title('ROC Curve')
+plt.title('ROC Curve(Logistic Regression)')
 plt.legend()
+plt.savefig(
+    "visualizations/logistic_regression_roc_curve.png",
+    bbox_inches="tight"
+)
 plt.show()
 
 """- roc_curve() computes false positive rates and true positive rates at different probability thresholds, which are then used to plot the ROC curve and evaluate the model’s classification performance.
@@ -410,7 +423,7 @@ pipeline_rf = Pipeline([
     ))
 ])
 
-"""Random forest classifier does not scaline as it is tree based model."""
+"""Random forest classifier does not need scaling as it is tree based model."""
 
 pipeline_rf.fit(X_train_smote, y_train_smote)
 
@@ -482,8 +495,12 @@ plt.plot(fpr, tpr, label='ROC Curve using Random Forest Classifier')
 plt.plot([0,1],[0,1],linestyle='--')
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
-plt.title('ROC Curve')
+plt.title('ROC Curve(Random Forest Classifier)')
 plt.legend()
+plt.savefig(
+    "visualizations/random_forest_roc_curve.png",
+    bbox_inches="tight"
+)
 plt.show()
 
 """The graph shows high tpr and low fpr that means it distiguishes well between two classes.
@@ -506,3 +523,12 @@ plt.show()
 
 -- when we consider recall as the best factor to what amount of predicted credit riskers are correct compared to all true credit riskers, we have to choose Random Forest Classifier as our final model.
 """
+
+import joblib
+
+joblib.dump(
+    pipeline_rf,
+    "credit_scoring_model.pkl"
+)
+
+print("Model saved successfully!")
